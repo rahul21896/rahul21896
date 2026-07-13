@@ -1,0 +1,35 @@
+# Updates the "Latest Blog Posts" section of the README between the
+# <!-- BLOG-POST-LIST:START --> and <!-- BLOG-POST-LIST:END --> markers.
+#
+# SETUP REQUIRED before enabling:
+#   1. Replace the placeholder feed_list URL below with your real RSS feed
+#      (Medium: https://medium.com/feed/@your-username,
+#       Dev.to: https://dev.to/feed/your-username,
+#       WordPress: https://your-blog.com/feed).
+#   2. Uncomment the `schedule` block to run it automatically every hour.
+# Until then it only runs manually via workflow_dispatch.
+name: Latest Blog Posts
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 * * * *" # every hour — uncomment after setting your real feed URL
+
+permissions:
+  contents: write
+
+jobs:
+  update-blog-posts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Pull latest blog posts
+        uses: gautamkrishnar/blog-post-workflow@v1
+        with:
+          # 🔧 REPLACE-ME with your real RSS feed URL(s), comma-separated
+          feed_list: "https://your-blog.example.com/feed"
+          max_post_count: 5
+          gh_token: ${{ secrets.GITHUB_TOKEN }}

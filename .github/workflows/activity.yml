@@ -1,0 +1,28 @@
+# Updates the "Recent GitHub Activity" section of the README between the
+# <!--START_SECTION:activity--> and <!--END_SECTION:activity--> markers.
+# Uses the built-in GITHUB_TOKEN — no extra secrets required.
+name: Recent Activity
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-activity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update recent activity section
+        uses: jamesgeorge007/github-activity-readme@master
+        with:
+          COMMIT_MSG: "docs: update recent GitHub activity"
+          MAX_LINES: 8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

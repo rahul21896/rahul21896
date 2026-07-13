@@ -1,0 +1,36 @@
+# Generates github-metrics.svg (the "Detailed Metrics" image in the README)
+# using lowlighter/metrics and commits it to the default branch.
+#
+# REQUIRED SETUP: create a classic Personal Access Token with `repo` and
+# `read:user` scopes and add it as a repository secret named METRICS_TOKEN.
+# See "GitHub Actions Setup.md" for step-by-step instructions.
+name: GitHub Metrics
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # every day at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  github-metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Generate metrics SVG
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: rahul21896
+          template: classic
+          filename: github-metrics.svg
+          base: header, activity, community, repositories, metadata
+          config_timezone: Asia/Kolkata
+          plugin_languages: yes
+          plugin_languages_limit: 8
+          plugin_languages_sections: most-used
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: half-year
+          plugin_lines: yes
